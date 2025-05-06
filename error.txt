@@ -1,0 +1,47 @@
+slotImages.length: 2
+=======================================================
+  GameControlPlus V1.2.2 created by
+  Christian Riekoff and Peter Lager
+=======================================================
+Failed to open device (/dev/input/event0): Failed to open device /dev/input/event0 (13)
+
+Failed to open device (/dev/input/event1): Failed to open device /dev/input/event1 (13)
+
+Failed to open device (/dev/input/event2): Failed to open device /dev/input/event2 (13)
+
+Failed to open device (/dev/input/event3): Failed to open device /dev/input/event3 (13)
+
+Failed to open device (/dev/input/event4): Failed to open device /dev/input/event4 (13)
+
+Failed to open device (/dev/input/event5): Failed to open device /dev/input/event5 (1)
+
+Failed to open device (/dev/input/event6): Failed to open device /dev/input/event6 (13)
+
+Failed to open device (/dev/input/event7): Failed to open device /dev/input/event7 (13)
+
+Failed to open device (/dev/input/event8): Failed to open device /dev/input/event8 (13)
+
+Failed to open device (/dev/input/event9): Failed to open device /dev/input/event9 (13)
+
+Failed to open device (/dev/input/event10): Failed to open device /dev/input/event10 (13)
+
+Failed to open device (/dev/input/event11): Failed to open device /dev/input/event11 (13)
+
+Failed to open device (/dev/input/js0): Failed to open device /dev/input/js0 (1)
+
+Linux plugin claims to have found 0 controllers
+/home/jumang4423/PROJECTS/nyagra-slot/nyagra_slot/data/slotController does not exist, loadStrings() will return null
+Unable to find configuration file slotController
+java.lang.NullPointerException: Cannot invoke "org.gamecontrolplus.Configuration.getUsage()" because "<parameter3>" is null
+	at org.gamecontrolplus.gui.KSelectDeviceUI.createGUI(Unknown Source)
+	at org.gamecontrolplus.gui.KSelectDeviceUI.<init>(Unknown Source)
+	at org.gamecontrolplus.gui.KManageConfiguration.selectDevice(Unknown Source)
+	at org.gamecontrolplus.ControlIO.getMatchedDevice(Unknown Source)
+	at org.gamecontrolplus.ControlIO.getMatchedDevice(Unknown Source)
+	at nyagra_slot.setupControl(nyagra_slot.java:66)
+	at nyagra_slot.setup(nyagra_slot.java:86)
+	at processing.core.PApplet.handleDraw(PApplet.java:2051)
+	at processing.awt.PSurfaceAWT$9.callDraw(PSurfaceAWT.java:1388)
+	at processing.core.PSurfaceNone$AnimationThread.run(PSurfaceNone.java:356)
+コントローラーエラー: Cannot invoke "org.gamecontrolplus.Configuration.getUsage()" because "<parameter3>" is null
+
