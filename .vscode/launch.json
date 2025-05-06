@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug Processing Sketch",
+            "request": "launch",
+            "mainClass": "processing.app.Sketch",
+            "args": [
+                "--sketch=${workspaceFolder}/nyagra_slot",
+                "--run"
+            ]
+        }
+    ]
+}

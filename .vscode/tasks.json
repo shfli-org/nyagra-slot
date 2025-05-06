@@ -1,0 +1,22 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Processing Sketch",
+            "type": "shell",
+            "command": "processing-java",
+            "args": [
+                "--sketch=${workspaceFolder}/nyagra_slot",
+                "--run"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        }
+    ]
+}
