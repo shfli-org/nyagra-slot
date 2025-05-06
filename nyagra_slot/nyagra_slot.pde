@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import org.gamecontrolplus.*;
+import net.java.games.input.*;
 
 ControlIO control;
 ControlDevice device;
@@ -38,7 +39,22 @@ void randomizeReelImagesIndex() {
 
 void setupControl() {
     control = ControlIO.getInstance(this);
-    device = control.getDevice("playstation1");
+    try {
+        // Linuxでの/dev/input/js0を直接指定
+        device = control.getMatchedDevice("slotController");
+        if (device == null) {
+            println("コントローラーが見つかりません: /dev/input/js0");
+            println("利用可能なデバイス:");
+            for (ControlDevice d : control.getDevices()) {
+                println(d.getName() + " - " + d.getTypeName());
+            }
+        } else {
+            println("コントローラー接続成功: " + device.getName());
+        }
+    } catch (Exception e) {
+        println("コントローラーエラー: " + e.getMessage());
+        e.printStackTrace();
+    }
 }
 
 void setup() {
@@ -130,17 +146,19 @@ void keyPressed() {
         pressSpin(3);
     }
 
-    if (device.getButton("1").pressed()) {
-        pressSpin(0);
-    }
-    if (device.getButton("2").pressed()) {
-        pressSpin(1);
-    }
-    if (device.getButton("3").pressed()) {
-        pressSpin(2);
-    }
-    if (device.getButton("4").pressed()) {
-        pressSpin(3);
+    if (device != null) {
+        if (device.getButton("buttonA").pressed()) {
+            pressSpin(0);
+        }
+        if (device.getButton("buttonB").pressed()) {
+            pressSpin(1);
+        }
+        if (device.getButton("buttonX").pressed()) {
+            pressSpin(2);
+        }
+        if (device.getButton("buttonY").pressed()) {
+            pressSpin(3);
+        }
     }
 }
 
