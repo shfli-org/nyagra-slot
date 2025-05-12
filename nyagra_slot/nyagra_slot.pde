@@ -8,13 +8,8 @@ int imageHeight = 100;
 ArrayList<PImage> slotImages;
 float[] positions = {0, 0, 0, 0};
 boolean[] isSpinning = {true, true, true, true};
-float spinSpeed = 8;
 int visibleImages = 8;
 int[][] reelImagesIndex;
-
-FileInputStream jsDevice;  // ジョイスティックデバイス
-byte[] jsData = new byte[8];  // ジョイスティックからのデータ
-boolean jsConnected = false;  // ジョイスティック接続状態
 
 void loadSlotImages() {
     slotImages = new ArrayList<PImage>();
@@ -39,22 +34,10 @@ void randomizeReelImagesIndex() {
     }
 }
 
-void setupJoystick() {
-    try {
-        jsDevice = new FileInputStream("/dev/input/js0");
-        jsConnected = true;
-        println("ジョイスティック接続成功: /dev/input/js0");
-    } catch (IOException e) {
-        println("ジョイスティック接続エラー: " + e.getMessage());
-        jsConnected = false;
-    }
-}
-
 void setup() {
     size(800, 600);
     loadSlotImages();
     randomizeReelImagesIndex();
-    setupJoystick();
 }
 
 void drawHitBar() {
@@ -66,17 +49,25 @@ void drawHitBar() {
     int margin = 80;
     rect(margin, height / 2 - imageHeight / 2, width - margin * 2, imageHeight, 30);
     colorMode(RGB, 255, 255, 255);
-
 }
+
+int calcSpinSpeed() {
+    // count is not spinning number
+    int count = 0;
+    for (int i = 0; i < 4; i++) {
+        if (!isSpinning[i]) {
+            count++;
+        }
+    }
+    int spinSpeed = count * 2 + 8;
+    return spinSpeed;
+}
+
 void draw() {
     background(255);
     
-    // ジョイスティックの入力を処理
-    if (jsConnected) {
-        checkJoystickInput();
-    }
-    
     drawHitBar();
+    int spinSpeed = calcSpinSpeed();
 
     for (int i = 0; i < 4; i++) {
         int x = 130 + i * (imageWidth + 50);
@@ -113,12 +104,6 @@ void draw() {
             colorMode(RGB, 255, 255, 255);
         }
     }
-    
-    // 操作説明を表示
-    fill(50);
-    textSize(16);
-    textAlign(CENTER);
-    text("キー 1-4 でスロットを停止、SPACEキーで再開", width/2, height - 30);
 }
 
 void pressSpin(int reelIndex) {
@@ -157,58 +142,4 @@ void fixPosition(int reelIndex) {
     println("index: " + index);
 
     positions[reelIndex] = index * imageHeight + (height / 2) - imageHeight / 2;
-}
-
-void checkJoystickInput() {
-    try {
-        // ノンブロッキングで読み込めるデータがあるか確認
-        if (jsDevice.available() >= 8) {
-            // 8バイト読み込み
-            jsDevice.read(jsData);
-            
-            // イベントタイプがボタン押下(type=1)の場合
-            if (jsData[6] == 1) {
-                int buttonNumber = jsData[7] & 0xFF;
-                int buttonState = jsData[4] & 0xFF;
-                
-                // ボタンが押された時のみ処理(buttonState=1)
-                if (buttonState == 1) {
-                    println("Button pressed: " + buttonNumber);
-                    
-                    // ボタン0-3で対応するスロットを停止
-                    if (buttonNumber >= 0 && buttonNumber < 4) {
-                        pressSpin(buttonNumber);
-                    }
-                    
-                    // ボタン9(通常はStartボタン)でリスタート
-                    if (buttonNumber == 9) {
-                        randomizeReelImagesIndex();
-                        isSpinning = new boolean[4];
-                        for (int i = 0; i < 4; i++) {
-                            isSpinning[i] = true;
-                        }
-                        positions = new float[4];
-                        for (int i = 0; i < 4; i++) {
-                            positions[i] = 0;
-                        }
-                    }
-                }
-            }
-        }
-    } catch (IOException e) {
-        println("ジョイスティック読み込みエラー: " + e.getMessage());
-        jsConnected = false;
-    }
-}
-
-// アプリケーション終了時にデバイスをクローズ
-void exit() {
-    if (jsConnected && jsDevice != null) {
-        try {
-            jsDevice.close();
-        } catch (IOException e) {
-            println("ジョイスティッククローズエラー: " + e.getMessage());
-        }
-    }
-    super.exit();
 }
