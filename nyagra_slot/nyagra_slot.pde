@@ -111,7 +111,7 @@ void draw() {
     int reelDisplayStripLength = visibleImages * 2;
 
     for (int i = 0; i < 4; i++) {
-        int x = 50 + i * (imageWidth + 50);
+        int x = 40 + i * (imageWidth + 50);
         int y_reelVisibleTop = height/2 - (imageHeight * visibleImages)/2;
         
         pushStyle();
@@ -203,55 +203,55 @@ void drawButton() {
     // top
     noStroke();
     fill(255, 0, 0);  // red
-    rect(40, -10, imageWidth + 20, 40, 30);
+    rect(30, -10, imageWidth + 20, 40, 30);
     fill(255, 255, 255);  // white text
     textSize(20);
-    text("O", 40 + (imageWidth + 20) / 2 - 4, 20);
+    text("O", 30 + (imageWidth + 20) / 2 - 4, 20);
 
     fill(0, 0, 255);  // blue
-    rect(40 + 1 * (imageWidth + 50), -10, imageWidth + 20, 40, 30);
+    rect(30 + 1 * (imageWidth + 50), -10, imageWidth + 20, 40, 30);
     fill(255, 255, 255);  // white text
     textSize(20);
-    text("X", 40 + 1 * (imageWidth + 50) + (imageWidth + 20) / 2 - 4, 20);
+    text("X", 30 + 1 * (imageWidth + 50) + (imageWidth + 20) / 2 - 4, 20);
 
     fill(255, 105, 180);  // hot pink
-    rect(40 + 2 * (imageWidth + 50), -10, imageWidth + 20, 40, 30);
+    rect(30 + 2 * (imageWidth + 50), -10, imageWidth + 20, 40, 30);
     fill(255, 255, 255);  // white text
     textSize(22);  // slightly larger text
-    text("[ ]", 40 + 2 * (imageWidth + 50) + (imageWidth + 20) / 2 - 4, 20);
+    text("[ ]", 30 + 2 * (imageWidth + 50) + (imageWidth + 20) / 2 - 4, 20);
 
     fill(0, 255, 0);  // green
-    rect(40 + 3 * (imageWidth + 50), -10, imageWidth + 20, 40, 30);
+    rect(30 + 3 * (imageWidth + 50), -10, imageWidth + 20, 40, 30);
     fill(255, 255, 255);  // white text
     textSize(20);
-    text("△", 40 + 3 * (imageWidth + 50) + (imageWidth + 20) / 2 - 4, 20);
+    text("△", 30 + 3 * (imageWidth + 50) + (imageWidth + 20) / 2 - 4, 20);
 
 
     // bottom
     noStroke();
     fill(255, 0, 0);  // red
-    rect(40, height - 30, imageWidth + 20, 40, 30);
+    rect(30, height - 30, imageWidth + 20, 40, 30);
     fill(255, 255, 255);  // white text
     textSize(20);
-    text("O", 40 + (imageWidth + 20) / 2 - 4, height - 10);
+    text("O", 30 + (imageWidth + 20) / 2 - 4, height - 10);
 
     fill(0, 0, 255);  // blue
-    rect(40 + 1 * (imageWidth + 50), height - 30, imageWidth + 20, 40, 30);
+    rect(30 + 1 * (imageWidth + 50), height - 30, imageWidth + 20, 40, 30);
     fill(255, 255, 255);  // white text
     textSize(20);
-    text("X", 40 + 1 * (imageWidth + 50) + (imageWidth + 20) / 2 - 4, height - 10);
+    text("X", 30 + 1 * (imageWidth + 50) + (imageWidth + 20) / 2 - 4, height - 10);
 
     fill(255, 105, 180);  // hot pink
-    rect(40 + 2 * (imageWidth + 50), height - 30, imageWidth + 20, 40, 30);
+    rect(30 + 2 * (imageWidth + 50), height - 30, imageWidth + 20, 40, 30);
     fill(255, 255, 255);  // white text
     textSize(22);  // slightly larger text
-    text("[ ]", 40 + 2 * (imageWidth + 50) + (imageWidth + 20) / 2 - 4, height - 10);
+    text("[ ]", 30 + 2 * (imageWidth + 50) + (imageWidth + 20) / 2 - 4, height - 10);
 
     fill(0, 255, 0);  // green
-    rect(40 + 3 * (imageWidth + 50), height - 30, imageWidth + 20, 40, 30);
+    rect(30 + 3 * (imageWidth + 50), height - 30, imageWidth + 20, 40, 30);
     fill(255, 255, 255);  // white text
     textSize(20);
-    text("△", 40 + 3 * (imageWidth + 50) + (imageWidth + 20) / 2 - 4, height - 10);
+    text("△", 30 + 3 * (imageWidth + 50) + (imageWidth + 20) / 2 - 4, height - 10);
     
 }
 
