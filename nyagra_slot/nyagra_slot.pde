@@ -464,3 +464,26 @@ void fixPosition(int reelIndex) {
     float singleCycleHeight = (float)visibleImages * imageHeight;
     positions[reelIndex] = (positions[reelIndex] % singleCycleHeight + singleCycleHeight) % singleCycleHeight;
 }
+
+
+
+
+slotImages.size(): 7
+==== JavaSound Minim Error ====
+==== Unable to return a SourceDataLine: unsupported format - PCM_SIGNED 48000.0 Hz, 16 bit, stereo, 4 bytes/frame, little-endian
+
+=== Minim Error ===
+=== Couldn't load the file audio/hit.wav
+
+==== JavaSound Minim Error ====
+==== Unable to return a SourceDataLine: unsupported format - PCM_SIGNED 48000.0 Hz, 16 bit, stereo, 4 bytes/frame, little-endian
+
+=== Minim Error ===
+=== Couldn't load the file audio/lost.wav
+
+=======================================================
+  GameControlPlus V1.2.2 created by
+  Christian Riekoff and Peter Lager
+=======================================================
+A library used by this sketch relies on native code that is not available.
+UnsatisfiedLinkError: /home/finyl/sketchbook/libraries/GameControlPlus/library/libjinput-linux.so: /home/finyl/sketchbook/libraries/GameControlPlus/library/libjinput-linux.so: wrong ELF class: ELFCLASS32 (Possible cause: can't load IA 32 .so on a AARCH64 platform)
