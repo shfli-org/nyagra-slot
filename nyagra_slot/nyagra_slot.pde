@@ -3,6 +3,9 @@ import java.util.Collections;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.File;
+import org.gamecontrolplus.*;
+import org.gamecontrolplus.gui.*;
+import net.java.games.input.*;
 
 int imageWidth = 100;
 int imageHeight = 100;
@@ -16,6 +19,9 @@ PImage logo;
 import processing.sound.*;
 SoundFile winSound;
 SoundFile loseSound;
+
+ControlIO control;
+ControlDevice device;
 
 void loadSlotImages() {
     slotImages = new ArrayList<PImage>();
@@ -75,6 +81,15 @@ void setup() {
     randomizeReelImagesIndex();
     loadAudio();
     logo = loadImage("logo.png");
+    if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+        control = ControlIO.getInstance(this);
+        device = control.getDevice("PLAYSTATION(R)3 Controller");
+        if (device == null) {
+            println("controller is not found");
+        }
+    } else {
+        println("controller is not supported on this platform");
+    }
 }
 
 void drawHitBar() {
@@ -100,14 +115,13 @@ int calcSpinSpeed() {
 }
 
 void draw() {
+    checkController();
+
     background(255);
-    
     int spinSpeed = calcSpinSpeed();
-    
     int[][] currentVisibleIndices = getCurrentMatrixIndex();
     int[][] imageIdMatrix = indexToImageIndex(currentVisibleIndices);
     boolean[][] hit = getHittedMatrix(imageIdMatrix);
-
     int reelDisplayStripLength = visibleImages * 2;
 
     for (int i = 0; i < 4; i++) {
@@ -334,6 +348,24 @@ void keyPressed() {
     }
     if (key == '4') {
         pressSpin(3);
+    }
+
+}
+
+void checkController() {
+    if (device != null) {
+        if (device.getButton("1").pressed()) {
+            pressSpin(0);
+        }
+        if (device.getButton("2").pressed()) {
+            pressSpin(1);
+        }
+        if (device.getButton("3").pressed()) {
+            pressSpin(2);
+        }
+        if (device.getButton("4").pressed()) {
+            pressSpin(3);
+        }
     }
 }
 
