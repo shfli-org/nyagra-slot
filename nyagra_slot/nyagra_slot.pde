@@ -3,9 +3,6 @@ import java.util.Collections;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.File;
-import org.gamecontrolplus.*;
-import org.gamecontrolplus.gui.*;
-import net.java.games.input.*;
 import ddf.minim.*;
 
 int imageWidth = 100;
@@ -20,9 +17,6 @@ PImage logo;
 Minim minim;
 AudioPlayer winSound;
 AudioPlayer loseSound;
-
-ControlIO control;
-ControlDevice device;
 
 void loadSlotImages() {
     slotImages = new ArrayList<PImage>();
@@ -50,6 +44,12 @@ void loadAudio() {
     minim = new Minim(this);
     winSound = minim.loadFile("audio/hit.wav");
     loseSound = minim.loadFile("audio/lost.wav");
+    if (winSound == null) {
+        println("Error: Could not load audio/hit.wav. Audio playback for wins will be disabled.");
+    }
+    if (loseSound == null) {
+        println("Error: Could not load audio/lost.wav. Audio playback for losses will be disabled.");
+    }
 }
 
 void randomizeReelImagesIndex() {
@@ -83,15 +83,10 @@ void setup() {
     randomizeReelImagesIndex();
     loadAudio();
     logo = loadImage("logo.png");
-    if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-        control = ControlIO.getInstance(this);
-        device = control.getDevice("PLAYSTATION(R)3 Controller");
-        if (device == null) {
-            println("controller is not found");
-        }
-    } else {
-        println("controller is not supported on this platform");
+    if (logo == null) {
+        println("Error: Could not load logo.png. Logo will not be displayed.");
     }
+
 }
 
 void drawHitBar() {
@@ -117,8 +112,6 @@ int calcSpinSpeed() {
 }
 
 void draw() {
-    checkController();
-
     background(255);
     int spinSpeed = calcSpinSpeed();
     int[][] currentVisibleIndices = getCurrentMatrixIndex();
@@ -286,7 +279,9 @@ void drawHitMatrix(boolean[][] hit) {
         }
     }
     // draw logo
-    image(logo, width - 180, height - 330, 160, 320);
+    if (logo != null) {
+        image(logo, width - 180, height - 330, 160, 320);
+    }
 }
 
 boolean isLastSpin() {
@@ -310,13 +305,22 @@ void playWinLoseAudio() {
                 break;
             }
         }
+        if(isHit) break;
     }
     if (isHit) {
-        winSound.rewind();
-        winSound.play();
+        if (winSound != null) {
+            winSound.rewind();
+            winSound.play();
+        } else {
+            println("Debug: Win condition met, but winSound is null.");
+        }
     } else {
-        loseSound.rewind();
-        loseSound.play();
+        if (loseSound != null) {
+            loseSound.rewind();
+            loseSound.play();
+        } else {
+            println("Debug: Lose condition met, but loseSound is null.");
+        }
     }
 }
 
@@ -354,23 +358,6 @@ void keyPressed() {
         pressSpin(3);
     }
 
-}
-
-void checkController() {
-    if (device != null) {
-        if (device.getButton("1").pressed()) {
-            pressSpin(0);
-        }
-        if (device.getButton("2").pressed()) {
-            pressSpin(1);
-        }
-        if (device.getButton("3").pressed()) {
-            pressSpin(2);
-        }
-        if (device.getButton("4").pressed()) {
-            pressSpin(3);
-        }
-    }
 }
 
 int[][] getCurrentMatrixIndex() {
@@ -466,24 +453,3 @@ void fixPosition(int reelIndex) {
 }
 
 
-
-
-slotImages.size(): 7
-==== JavaSound Minim Error ====
-==== Unable to return a SourceDataLine: unsupported format - PCM_SIGNED 48000.0 Hz, 16 bit, stereo, 4 bytes/frame, little-endian
-
-=== Minim Error ===
-=== Couldn't load the file audio/hit.wav
-
-==== JavaSound Minim Error ====
-==== Unable to return a SourceDataLine: unsupported format - PCM_SIGNED 48000.0 Hz, 16 bit, stereo, 4 bytes/frame, little-endian
-
-=== Minim Error ===
-=== Couldn't load the file audio/lost.wav
-
-=======================================================
-  GameControlPlus V1.2.2 created by
-  Christian Riekoff and Peter Lager
-=======================================================
-A library used by this sketch relies on native code that is not available.
-UnsatisfiedLinkError: /home/finyl/sketchbook/libraries/GameControlPlus/library/libjinput-linux.so: /home/finyl/sketchbook/libraries/GameControlPlus/library/libjinput-linux.so: wrong ELF class: ELFCLASS32 (Possible cause: can't load IA 32 .so on a AARCH64 platform)
