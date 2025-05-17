@@ -3,7 +3,7 @@ import java.util.Collections;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.File;
-import ddf.minim.*;
+import processing.sound.*;
 
 int imageWidth = 100;
 int imageHeight = 100;
@@ -14,9 +14,8 @@ int visibleImages = 8;
 int[][] reelImagesIndex;
 PImage logo;
 
-Minim minim;
-AudioPlayer winSound;
-AudioPlayer loseSound;
+SoundFile winSound;
+SoundFile loseSound;
 
 void loadSlotImages() {
     slotImages = new ArrayList<PImage>();
@@ -41,14 +40,15 @@ void loadSlotImages() {
 }
 
 void loadAudio() {
-    minim = new Minim(this);
-    winSound = minim.loadFile("audio/hit.wav");
-    loseSound = minim.loadFile("audio/lost.wav");
-    if (winSound == null) {
+    winSound = new SoundFile(this, "audio/hit.wav");
+    loseSound = new SoundFile(this, "audio/lost.wav");
+    if (winSound == null || !winSound.isLoaded()) {
         println("Error: Could not load audio/hit.wav. Audio playback for wins will be disabled.");
+        winSound = null;
     }
-    if (loseSound == null) {
+    if (loseSound == null || !loseSound.isLoaded()) {
         println("Error: Could not load audio/lost.wav. Audio playback for losses will be disabled.");
+        loseSound = null;
     }
 }
 
@@ -309,14 +309,12 @@ void playWinLoseAudio() {
     }
     if (isHit) {
         if (winSound != null) {
-            winSound.rewind();
             winSound.play();
         } else {
             println("Debug: Win condition met, but winSound is null.");
         }
     } else {
         if (loseSound != null) {
-            loseSound.rewind();
             loseSound.play();
         } else {
             println("Debug: Lose condition met, but loseSound is null.");
