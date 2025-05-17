@@ -42,11 +42,11 @@ void loadSlotImages() {
 void loadAudio() {
     winSound = new SoundFile(this, "audio/hit.wav");
     loseSound = new SoundFile(this, "audio/lost.wav");
-    if (winSound == null || !winSound.isLoaded()) {
+    if (winSound == null) {
         println("Error: Could not load audio/hit.wav. Audio playback for wins will be disabled.");
         winSound = null;
     }
-    if (loseSound == null || !loseSound.isLoaded()) {
+    if (loseSound == null) {
         println("Error: Could not load audio/lost.wav. Audio playback for losses will be disabled.");
         loseSound = null;
     }
