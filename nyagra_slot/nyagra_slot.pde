@@ -1,13 +1,6 @@
 import java.util.ArrayList;
-import java.util.Collections;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.File;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import processing.sound.*;
 
 int imageWidth = 100;
 int imageHeight = 100;
@@ -18,8 +11,8 @@ int visibleImages = 8;
 int[][] reelImagesIndex;
 PImage logo;
 
-Clip winSound;
-Clip loseSound;
+SoundFile winSound;
+SoundFile loseSound;
 
 void loadSlotImages() {
     slotImages = new ArrayList<PImage>();
@@ -45,42 +38,16 @@ void loadSlotImages() {
 
 void loadAudio() {
     try {
-        File winFile = new File(sketchPath("audio/hit.wav"));
-        if (winFile.exists()) {
-            AudioInputStream audioStreamWin = AudioSystem.getAudioInputStream(winFile);
-            winSound = AudioSystem.getClip();
-            winSound.open(audioStreamWin);
-        } else {
-            println("Error: audio/hit.wav not found.");
-            winSound = null;
-        }
-    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-        println("Error loading audio/hit.wav: " + e.getMessage());
-        e.printStackTrace();
+        winSound = new SoundFile(this, "audio/hit.wav");
+    } catch (Exception e) {
+        println("Error: Could not load audio/hit.wav. Audio playback for wins will be disabled.");
         winSound = null;
     }
-
     try {
-        File loseFile = new File(sketchPath("audio/lost.wav"));
-        if (loseFile.exists()) {
-            AudioInputStream audioStreamLose = AudioSystem.getAudioInputStream(loseFile);
-            loseSound = AudioSystem.getClip();
-            loseSound.open(audioStreamLose);
-        } else {
-            println("Error: audio/lost.wav not found.");
-            loseSound = null;
-        }
-    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-        println("Error loading audio/lost.wav: " + e.getMessage());
-        e.printStackTrace();
+        loseSound = new SoundFile(this, "audio/lost.wav");
+    } catch (Exception e) {
+        println("Error: Could not load audio/lost.wav. Audio playback for losses will be disabled.");
         loseSound = null;
-    }
-
-    if (winSound == null) {
-        println("Audio playback for wins will be disabled.");
-    }
-    if (loseSound == null) {
-        println("Audio playback for losses will be disabled.");
     }
 }
 
@@ -110,7 +77,16 @@ boolean isSpinningFinished() {
 }
 
 void setup() {
-    size(800, 600);
+    // Raspberry Pi (and other low-power boards) can struggle with default
+    // software rendering at 60 FPS.  Using the P2D renderer enables OpenGL
+    // acceleration when available, limiting the frame-rate eases CPU load,
+    // and disabling smoothing/mip-maps avoids unnecessary extra work the
+    // GPU/CPU would otherwise perform.
+
+    size(800, 600, P2D);   // use hardware-accelerated 2D renderer
+    frameRate(30);         // cap FPS – half the default is usually enough
+    noSmooth();            // turn off anti-aliasing
+    hint(DISABLE_TEXTURE_MIPMAPS);
     loadSlotImages();
     randomizeReelImagesIndex();
     loadAudio();
@@ -118,7 +94,6 @@ void setup() {
     if (logo == null) {
         println("Error: Could not load logo.png. Logo will not be displayed.");
     }
-
 }
 
 void drawHitBar() {
@@ -341,23 +316,15 @@ void playWinLoseAudio() {
     }
     if (isHit) {
         if (winSound != null) {
-            if (winSound.isRunning()) {
-                winSound.stop();
-            }
-            winSound.setFramePosition(0);
-            winSound.start();
+            winSound.play();
         } else {
-            println("Debug: Win condition met, but winSound is null or not loaded.");
+            println("Debug: Win condition met, but winSound is null.");
         }
     } else {
         if (loseSound != null) {
-            if (loseSound.isRunning()) {
-                loseSound.stop();
-            }
-            loseSound.setFramePosition(0);
-            loseSound.start();
+            loseSound.play();
         } else {
-            println("Debug: Lose condition met, but loseSound is null or not loaded.");
+            println("Debug: Lose condition met, but loseSound is null.");
         }
     }
 }
@@ -490,13 +457,6 @@ void fixPosition(int reelIndex) {
     positions[reelIndex] = (positions[reelIndex] % singleCycleHeight + singleCycleHeight) % singleCycleHeight;
 }
 
-public void dispose() {
-    if (winSound != null) {
-        winSound.close();
-    }
-    if (loseSound != null) {
-        loseSound.close();
-    }
-}
+
 
 
