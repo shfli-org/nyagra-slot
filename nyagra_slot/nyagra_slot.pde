@@ -6,6 +6,7 @@ import java.io.File;
 import org.gamecontrolplus.*;
 import org.gamecontrolplus.gui.*;
 import net.java.games.input.*;
+import ddf.minim.*;
 
 int imageWidth = 100;
 int imageHeight = 100;
@@ -16,9 +17,9 @@ int visibleImages = 8;
 int[][] reelImagesIndex;
 PImage logo;
 
-import processing.sound.*;
-SoundFile winSound;
-SoundFile loseSound;
+Minim minim;
+AudioPlayer winSound;
+AudioPlayer loseSound;
 
 ControlIO control;
 ControlDevice device;
@@ -46,8 +47,9 @@ void loadSlotImages() {
 }
 
 void loadAudio() {
-    winSound = new SoundFile(this, "audio/hit.mp3");
-    loseSound = new SoundFile(this, "audio/lost.mp3");
+    minim = new Minim(this);
+    winSound = minim.loadFile("audio/hit.mp3");
+    loseSound = minim.loadFile("audio/lost.mp3");
 }
 
 void randomizeReelImagesIndex() {
@@ -310,8 +312,10 @@ void playWinLoseAudio() {
         }
     }
     if (isHit) {
+        winSound.rewind();
         winSound.play();
     } else {
+        loseSound.rewind();
         loseSound.play();
     }
 }
