@@ -3,7 +3,11 @@ import java.util.Collections;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.File;
-import processing.sound.*;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 int imageWidth = 100;
 int imageHeight = 100;
@@ -14,8 +18,8 @@ int visibleImages = 8;
 int[][] reelImagesIndex;
 PImage logo;
 
-SoundFile winSound;
-SoundFile loseSound;
+Clip winSound;
+Clip loseSound;
 
 void loadSlotImages() {
     slotImages = new ArrayList<PImage>();
@@ -40,15 +44,43 @@ void loadSlotImages() {
 }
 
 void loadAudio() {
-    winSound = new SoundFile(this, "audio/hit.wav");
-    loseSound = new SoundFile(this, "audio/lost.wav");
-    if (winSound == null) {
-        println("Error: Could not load audio/hit.wav. Audio playback for wins will be disabled.");
+    try {
+        File winFile = new File(sketchPath("audio/hit.wav"));
+        if (winFile.exists()) {
+            AudioInputStream audioStreamWin = AudioSystem.getAudioInputStream(winFile);
+            winSound = AudioSystem.getClip();
+            winSound.open(audioStreamWin);
+        } else {
+            println("Error: audio/hit.wav not found.");
+            winSound = null;
+        }
+    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+        println("Error loading audio/hit.wav: " + e.getMessage());
+        e.printStackTrace();
         winSound = null;
     }
-    if (loseSound == null) {
-        println("Error: Could not load audio/lost.wav. Audio playback for losses will be disabled.");
+
+    try {
+        File loseFile = new File(sketchPath("audio/lost.wav"));
+        if (loseFile.exists()) {
+            AudioInputStream audioStreamLose = AudioSystem.getAudioInputStream(loseFile);
+            loseSound = AudioSystem.getClip();
+            loseSound.open(audioStreamLose);
+        } else {
+            println("Error: audio/lost.wav not found.");
+            loseSound = null;
+        }
+    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+        println("Error loading audio/lost.wav: " + e.getMessage());
+        e.printStackTrace();
         loseSound = null;
+    }
+
+    if (winSound == null) {
+        println("Audio playback for wins will be disabled.");
+    }
+    if (loseSound == null) {
+        println("Audio playback for losses will be disabled.");
     }
 }
 
@@ -309,15 +341,23 @@ void playWinLoseAudio() {
     }
     if (isHit) {
         if (winSound != null) {
-            winSound.play();
+            if (winSound.isRunning()) {
+                winSound.stop();
+            }
+            winSound.setFramePosition(0);
+            winSound.start();
         } else {
-            println("Debug: Win condition met, but winSound is null.");
+            println("Debug: Win condition met, but winSound is null or not loaded.");
         }
     } else {
         if (loseSound != null) {
-            loseSound.play();
+            if (loseSound.isRunning()) {
+                loseSound.stop();
+            }
+            loseSound.setFramePosition(0);
+            loseSound.start();
         } else {
-            println("Debug: Lose condition met, but loseSound is null.");
+            println("Debug: Lose condition met, but loseSound is null or not loaded.");
         }
     }
 }
@@ -448,6 +488,15 @@ void fixPosition(int reelIndex) {
 
     float singleCycleHeight = (float)visibleImages * imageHeight;
     positions[reelIndex] = (positions[reelIndex] % singleCycleHeight + singleCycleHeight) % singleCycleHeight;
+}
+
+public void dispose() {
+    if (winSound != null) {
+        winSound.close();
+    }
+    if (loseSound != null) {
+        loseSound.close();
+    }
 }
 
 
