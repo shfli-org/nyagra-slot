@@ -48,8 +48,8 @@ void loadSlotImages() {
 
 void loadAudio() {
     minim = new Minim(this);
-    winSound = minim.loadFile("audio/hit.mp3");
-    loseSound = minim.loadFile("audio/lost.mp3");
+    winSound = minim.loadFile("audio/hit.wav");
+    loseSound = minim.loadFile("audio/lost.wav");
 }
 
 void randomizeReelImagesIndex() {
